@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReelGen - Made by Raju Mandal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 400px;
+    }
+    video {
+      margin-top: 20px;
+      max-width: 100%;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 ReelGen</h1>
+  <input type="text" id="promptInput" placeholder="Enter your prompt..." />
+  <button onclick="generateReel()">Generate Reel</button>
+  <video id="videoPreview" controls style="display:none;"></video>
+  <p id="status"></p>
+  <footer>Made by Raju Mandal</footer>
+
+  <script>
+    async function generateReel() {
+      const prompt = document.getElementById('promptInput').value;
+      const status = document.getElementById('status');
+      const video = document.getElementById('videoPreview');
+      status.textContent = 'Generating...';
+
+      try {
+        const res = await fetch('https://9c39f090-a70c-4a80-ad62-5a16f93e1afd-00-2ejkq2boiigv8.sisko.replit.dev/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, username: 'rajumandal' })
+        });
+        const data = await res.json();
+
+        if (data.video) {
+          video.src = data.video;
+          video.style.display = 'block';
+          status.textContent = '✅ Reel generated!';
+        } else {
+          status.textContent = '❌ Failed to generate video.';
+        }
+      } catch (err) {
+        status.textContent = '❌ Error contacting backend.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
